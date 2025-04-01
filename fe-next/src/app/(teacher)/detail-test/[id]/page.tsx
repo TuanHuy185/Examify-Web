@@ -219,29 +219,10 @@ const TestDetails = () => {
         return;
       }
 
-      // Convert back to API format
-      const testToSave: EditedTest = {
+      const testToSave = {
         ...editedTest,
-        id: editedTest.id || '',
-        testTime: Number(editedTest.testTime),
-        timeOpen: new Date(editedTest.timeOpen).toISOString(),
-        timeClose: new Date(editedTest.timeClose).toISOString(),
         teacherId: Number(teacherId),
         numberOfQuestion: editedTest.questions.length,
-        questions: editedTest.questions.map((q) => ({
-          id: q.id || '',
-          content: q.content,
-          score: Number(q.score || 1),
-          answers: q.answers.map((a) => ({
-            id: a.id || '',
-            content: a.content,
-            isCorrect: a.isCorrect
-          })),
-        })),
-        deletedQuestionIds: (currentTest?.questions as Question[])
-          .filter(q => !editedTest.questions.some(eq => eq.id === q.id))
-          .map(q => q.id || '')
-          .filter(id => id !== '') || []
       };
 
       console.log('Saving test:', testToSave);

@@ -45,7 +45,7 @@ const Dashboard = () => {
   };
 
   const handleViewResults = (testId: string) => {
-    router.push(`/results/${testId}`);
+    router.push(`/result-test/${testId}`);
   };
 
   const handleViewDetails = (testId: string) => {
