@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInfo, selectUser } from "@/store/slices/userSlice";
-import { RootState, AppDispatch } from "@/store/store";
-import { User } from "@/types/slices";
+import { AppDispatch } from "@/store/store";
 import Navbar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 
@@ -24,30 +23,6 @@ const UserProfile = () => {
       dispatch(fetchUserInfo(userId));
     }
   }, [dispatch, userId]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-neutral-50">
-        <Navbar />
-        <main className="max-w-7xl mx-auto px-4 py-8">
-          <p className="text-neutral-600">Loading user profile...</p>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-neutral-50">
-        <Navbar />
-        <main className="max-w-7xl mx-auto px-4 py-8">
-          <p className="text-red-500">Error: {error}</p>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
 
   if (!userInfo) {
     return (

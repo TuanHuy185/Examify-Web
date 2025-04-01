@@ -1,13 +1,15 @@
-// CreateTest.tsx
 'use client';
 
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store/store";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { createTest } from "@/store/slices/teacherTestSlice";
 import { toast } from "react-toastify";
 import { ArrowLeft, ArrowUp, ArrowDown } from "lucide-react";
+import { Test } from "@/types/slices";
 
 interface Option {
   text: string;
@@ -30,6 +32,7 @@ interface TestData {
 
 const CreateTest = () => {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   // Single state object for all test data
   const [testData, setTestData] = useState<TestData>({
@@ -55,13 +58,13 @@ const CreateTest = () => {
   };
 
   // Handle changes to test details
-  const handleTestDetailsChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleTestDetailsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setTestData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Handle changes to new question text
-  const handleQuestionTextChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleQuestionTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewQuestion((prev) => ({ ...prev, text: e.target.value }));
   };
 
@@ -142,7 +145,7 @@ const CreateTest = () => {
   };
 
   // Submit the entire testData to the API
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
       !testData.title ||
@@ -166,31 +169,28 @@ const CreateTest = () => {
     const formattedTestData = {
       title: testData.title,
       description: testData.description,
-      duration: parseInt(testData.testTime, 10),
-      startTime: testData.startTime,
-      endTime: testData.closeTime,
-      teacherId: localStorage.getItem("userId") || "",
-      status: "DRAFT" as const,
-      passcode: "",
-      testtime: parseInt(testData.testTime, 10),
-      timeopen: testData.startTime,
-      timeclose: testData.closeTime,
-      questions: testData.questions.map((q, index) => ({
-        id: `temp-${index}`,
+      testTime: parseInt(testData.testTime, 10),
+      timeOpen: new Date(testData.startTime).toISOString(),
+      timeClose: new Date(testData.closeTime).toISOString(),
+      teacherId: localStorage.getItem("userId"),
+      numberOfQuestion: testData.questions.length,
+      questions: testData.questions.map((q) => ({
         content: q.text,
-        type: "MULTIPLE_CHOICE" as const,
-        options: q.options.map(opt => opt.text),
-        correctAnswer: q.options.filter(opt => opt.isCorrect).map(opt => opt.text),
-        points: 1.0
-      }))
+        score: 1.0, // Default score; add field if needed
+        answers: q.options.map((opt) => ({
+          content: opt.text,
+          isCorrect: opt.isCorrect,
+        })),
+      })),
     };
 
     try {
-      await createTest(formattedTestData);
+      const result = await dispatch(createTest(formattedTestData as unknown as Omit<Test, 'id'>)).unwrap();
       toast.success("Test created successfully");
-      router.push("/teacher");
+      router.push("/dashboard");
     } catch (error: any) {
-      alert("Failed to create test: " + error.message);
+      console.error("Error creating test:", error);
+      toast.error(error.message || "Failed to create test");
     }
   };
 

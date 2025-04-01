@@ -37,7 +37,7 @@ const NavBar = () => {
 
   const getDashboardLink = () => {
     if (!userRole) return "/";
-    return userRole === "TEACHER" ? "/teacher/dashboard" : "/student/dashboard";
+    return "/dashboard" ;
   };
 
   return (

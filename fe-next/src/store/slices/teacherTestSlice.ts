@@ -6,6 +6,7 @@ export const createTest = createAsyncThunk(
   "tests/createTest",
   async (testData: Omit<Test, 'id'>, { rejectWithValue }) => {
     try {
+      console.log("Sending test data:", testData);
       const apiUrl = `${process.env.NEXT_PUBLIC_BE_API_URL}/tests`;
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -16,12 +17,18 @@ export const createTest = createAsyncThunk(
         body: JSON.stringify(testData),
       });
 
+      const data = await response.json();
+      console.log("API Response:", data);
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+        throw new Error(data.message || `HTTP error! Status: ${response.status}`);
       }
 
-      return await response.json();
+      if (data.status !== "OK") {
+        throw new Error(data.message || "Failed to create test");
+      }
+
+      return data; // Return the actual test data instead of the whole response
     } catch (error) {
       console.error("Error creating test:", error instanceof Error ? error.message : 'Unknown error');
       return rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
@@ -78,6 +85,7 @@ export const fetchTestDetails = createAsyncThunk(
 export const updateTest = createAsyncThunk(
   "tests/updateTest",
   async (testData: Test, { rejectWithValue }) => {
+    console.log('Updating test:', testData);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BE_API_URL}/tests`,

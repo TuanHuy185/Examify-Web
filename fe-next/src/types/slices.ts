@@ -1,18 +1,22 @@
 // Test Types
 export interface Test {
-    id: string;
+    id?: string;
     title: string;
-    description?: string;
-    duration: number;
-    startTime?: string;
-    endTime?: string;
-    questions: Question[];
-    teacherId: string;
-    status: 'DRAFT' | 'PUBLISHED' | 'CLOSED';
-    passcode: string;
-    testtime: number;
-    timeopen: string;
-    timeclose: string;
+    passcode?: string;
+    description: string;
+    testTime: number;
+    timeOpen: string;
+    timeClose: string;
+    teacherId: number;
+    numberOfQuestion: number;
+    questions: {
+        content: string;
+        score: number;
+        answers: {
+            content: string;
+            isCorrect: boolean;
+        }[];
+    }[];
 }
 
 export interface Question {

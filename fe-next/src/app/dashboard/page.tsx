@@ -45,11 +45,11 @@ const Dashboard = () => {
   };
 
   const handleViewResults = (testId: string) => {
-    router.push(`/teacher/results/${testId}`);
+    router.push(`/results/${testId}`);
   };
 
   const handleViewDetails = (testId: string) => {
-    router.push(`/teacher/testdetails/${testId}`);
+    router.push(`/detail-test/${testId}`);
   };
 
   const handleJoinTest = async () => {
@@ -85,7 +85,7 @@ const Dashboard = () => {
           const query = searchQuery.toLowerCase();
           return (
             test.title.toLowerCase().includes(query) ||
-            test.passcode.toLowerCase().includes(query)
+            test.passcode?.toLowerCase().includes(query) 
           );
         }))
     : (searchQuery.trim() === ''
@@ -223,7 +223,7 @@ const Dashboard = () => {
                         </td>
                         <td className="p-4">
                           <button
-                            onClick={() => handleViewDetails(test.id)}
+                            onClick={() => handleViewDetails(test.id || "")}
                             className="text-primary hover:underline"
                           >
                             View Details
@@ -231,7 +231,7 @@ const Dashboard = () => {
                         </td>
                         <td className="p-4">
                           <button
-                            onClick={() => handleViewResults(test.id)}
+                            onClick={() => handleViewResults(test.id || "")}
                             className="text-primary hover:underline"
                           >
                             View Results
