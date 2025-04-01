@@ -22,7 +22,7 @@ export const fetchUserInfo = createAsyncThunk(
       if (data.status !== "OK") {
         throw new Error(data.message || "Failed to fetch user information");
       }
-
+      console.log(data.data);
       return data.data;
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Unknown error');

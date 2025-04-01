@@ -43,11 +43,10 @@ export interface Answer {
 // User Types
 export interface User {
     id: string;
-    username: string;
+    name: string;
     email: string;
     role: 'STUDENT' | 'TEACHER';
-    firstName?: string;
-    lastName?: string;
+    date_of_birth: string;
 }
 
 // State Types
