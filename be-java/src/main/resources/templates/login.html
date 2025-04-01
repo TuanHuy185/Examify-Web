@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="/css/login.css" />
+    <script src="/js/login.js"></script>
+</head>
+<body>
+    <div class="login">
+        <h1>Please Log In</h1>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input name="username" id="username" type="text" required/>
+            
+            <label for="password">Password:</label>
+            <input name="password" id="password" type="password" required/>
+            
+            <button type="submit">Login</button>
+
+            <div th:if="${param.error}" class="message">
+                Invalid username and password.
+            </div>
+            <div th:if="${param.logout}" class="message">
+                You have been logged out.
+            </div>
+            <div th:if="${param.except}" class="message">
+                Something went wrong!
+            </div>
+        </form>
+    </div>
+    
+    <div class="oauth">
+        <a href="/oauth2/authorization/google" class="oauth-button google">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6WwgH7Nl5_AW9nDCnR2Ozb_AU3rkIbSJdAg&s" alt="Google Logo">
+            Log in with Google
+        </a>
+        <a href="/oauth2/authorization/github" class="oauth-button github">
+            <img src="https://avatars.githubusercontent.com/u/9919?s=460&v=4" alt="GitHub Logo">
+            Log in with GitHub
+        </a>
+    </div>
+    
+    <a href="/index" class="back">BACK!</a>
+</body>
+</html>
