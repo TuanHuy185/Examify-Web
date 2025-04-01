@@ -29,12 +29,27 @@ export interface Question {
 }
 
 export interface TestResult {
-    id: string;
-    testId: string;
-    studentId: string;
-    score: number;
-    submittedAt: string;
-    answers: Answer[];
+    result: {
+        id: string;
+        testId: string;
+        studentId: string;
+        totalscore: number;
+        starttime: string;
+        endtime: string;
+    };
+    questions: {
+        id: string;
+        content: string;
+        score: number;
+        testid: string;
+        answers: {
+            id: string;
+            content: string;
+            iscorrect: boolean;
+        }[];
+        answerid: string;
+        iscorrect: boolean;
+    }[];
 }
 
 export interface Answer {

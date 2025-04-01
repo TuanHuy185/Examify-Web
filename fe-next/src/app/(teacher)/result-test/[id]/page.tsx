@@ -26,7 +26,7 @@ const ViewResults = () => {
   }, [dispatch, testId]);
 
   const handleViewDetails = (studentId: string) => {
-    router.push(`/tests/${testId}/students/${studentId}/results`);
+    router.push(`/test/${testId}/students/${studentId}`);
   };
 
   const handleGoBack = () => {

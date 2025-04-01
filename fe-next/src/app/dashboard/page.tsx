@@ -91,7 +91,7 @@ const Dashboard = () => {
     : (searchQuery.trim() === ''
       ? pastResults 
       : pastResults.filter(result => 
-          result.id.toLowerCase().includes(searchQuery.toLowerCase())
+          result.testid.toLowerCase().includes(searchQuery.toLowerCase())
         ));
 
   return (
@@ -258,33 +258,26 @@ const Dashboard = () => {
                   <thead className="bg-accent">
                     <tr>
                       <th className="text-left p-4 text-neutral-800">Test Title</th>
+                      <th className="text-left p-4 text-neutral-800">Description</th>
                       <th className="text-left p-4 text-neutral-800">Total Score</th>
                       <th className="text-left p-4 text-neutral-800">Start Time</th>
                       <th className="text-left p-4 text-neutral-800">End Time</th>
-                      <th className="text-left p-4 text-neutral-800">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {(filteredTests as TestResult[]).map((result) => (
+                    {(filteredTests as any[]).map((result) => (
                       <tr
-                        key={result.id}
+                        key={result.testid}
                         className="border-t border-neutral-600 hover:bg-accent"
                       >
-                        <td className="p-4 text-neutral-600">Test {result.id}</td>
-                        <td className="p-4 text-neutral-600">{result.score}</td>
+                        <td className="p-4 text-neutral-600">{result.title}</td>
+                        <td className="p-4 text-neutral-600">{result.description}</td>
+                        <td className="p-4 text-neutral-600">{result.totalscore}</td>
                         <td className="p-4 text-neutral-600">
-                          {new Date(result.submittedAt).toLocaleString()}
+                          {new Date(result.starttime).toLocaleString()}
                         </td>
                         <td className="p-4 text-neutral-600">
-                          {new Date(result.submittedAt).toLocaleString()}
-                        </td>
-                        <td className="p-4">
-                          <button
-                            onClick={() => handleViewDetails(result.id)}
-                            className="text-primary hover:underline"
-                          >
-                            View Details
-                          </button>
+                          {new Date(result.endtime).toLocaleString()}
                         </td>
                       </tr>
                     ))}
