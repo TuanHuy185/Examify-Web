@@ -66,7 +66,8 @@ const Dashboard = () => {
       const result = await response.json();
 
       if (response.ok && result.status === "OK" && result.data) {
-        router.push(`/student/test/${passcode}`);
+        // Pass test data through URL state
+        router.push(`/test/${passcode}?testData=${encodeURIComponent(JSON.stringify(result.data))}`);
       } else {
         setJoinError("There is no test matches the passcode.");
       }
@@ -76,7 +77,6 @@ const Dashboard = () => {
       setJoinLoading(false);
     }
   };
-
   // Filter tests based on search query
   const filteredTests = userRole === 'teacher' 
     ? (searchQuery.trim() === ""

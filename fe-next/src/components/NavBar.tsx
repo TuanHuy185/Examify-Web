@@ -8,21 +8,35 @@ import { LogOut, User } from 'lucide-react';
 import profileAvt from "../../public/avt-profile.png";
 import logoImage from "../../public/Examify.png";
 
-const NavBar = () => {
+interface NavBarProps {
+  isAuthenticated?: boolean;
+  userRole?: string;
+  onLogout?: () => void;
+}
+
+const NavBar = ({ isAuthenticated, userRole: propUserRole, onLogout }: NavBarProps) => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    setUserRole(localStorage.getItem("userRole"));
-  }, []);
+    if (propUserRole) {
+      setUserRole(propUserRole);
+    } else {
+      setUserRole(localStorage.getItem("userRole"));
+    }
+  }, [propUserRole]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userRole");
     localStorage.removeItem("userId");
     setUserRole(null);
-    router.push("/login");
+    if (onLogout) {
+      onLogout();
+    } else {
+      router.push("/login");
+    }
   };
 
   const toggleDropdown = () => {
@@ -37,7 +51,7 @@ const NavBar = () => {
 
   const getDashboardLink = () => {
     if (!userRole) return "/";
-    return "/dashboard" ;
+    return "/dashboard";
   };
 
   return (
@@ -65,58 +79,56 @@ const NavBar = () => {
             </span>
           </div>
 
-          <div className="flex items-center space-x-4">
-            {userRole ? (
-              <div className="relative" onBlur={closeDropdown}>
-                <button
-                  onClick={toggleDropdown}
-                  className="flex items-center space-x-2"
-                >
-                  <Image
-                    src={profileAvt}
-                    alt="Profile"
-                    width={40}
-                    height={40}
-                    className="rounded-full border-2 border-gray-200 hover:border-primary transition-colors"
-                  />
-                </button>
+          {(isAuthenticated || userRole) ? (
+            <div className="relative" onBlur={closeDropdown}>
+              <button
+                onClick={toggleDropdown}
+                className="flex items-center space-x-2"
+              >
+                <Image
+                  src={profileAvt}
+                  alt="Profile"
+                  width={40}
+                  height={40}
+                  className="rounded-full border-2 border-gray-200 hover:border-primary transition-colors"
+                />
+              </button>
 
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-100 py-1">
-                    <Link
-                      href="/profile"
-                      className="flex items-center px-4 py-2 text-sm text-neutral-600 hover:bg-gray-50"
-                    >
-                      <User size={16} className="mr-2" />
-                      Thông tin {userRole === "TEACHER" ? "giáo viên" : "sinh viên"}
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
-                    >
-                      <LogOut size={16} className="mr-2" />
-                      Đăng xuất
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center space-x-4">
-                <Link 
-                  href="/login" 
-                  className="text-neutral-600 hover:text-primary transition-colors"
-                >
-                  Đăng nhập
-                </Link>
-                <Link
-                  href="/signup"
-                  className="bg-primary text-neutral-600 px-4 py-2 rounded-md hover:bg-secondary transition-colors"
-                >
-                  Đăng ký
-                </Link>
-              </div>
-            )}
-          </div>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-100 py-1">
+                  <Link
+                    href="/profile"
+                    className="flex items-center px-4 py-2 text-sm text-neutral-600 hover:bg-gray-50"
+                  >
+                    <User size={16} className="mr-2" />
+                    Thông tin {userRole === "TEACHER" ? "giáo viên" : "sinh viên"}
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                  >
+                    <LogOut size={16} className="mr-2" />
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/login" 
+                className="text-neutral-600 hover:text-primary transition-colors"
+              >
+                Đăng nhập
+              </Link>
+              <Link
+                href="/signup"
+                className="bg-primary text-neutral-600 px-4 py-2 rounded-md hover:bg-secondary transition-colors"
+              >
+                Đăng ký
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>
