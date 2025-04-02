@@ -1,0 +1,43 @@
+services:
+  app:
+    image: 'web-exam:1.0.0'
+    build:
+      context: ./be-java
+      dockerfile: Dockerfile
+    container_name: web-exam-app
+    restart: always
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://hcmut.postgres.database.azure.com:5432/Examify?user=lemonHV&password=mtv123@@&sslmode=require
+      - SPRING_DATASOURCE_USERNAME=lemonHV
+      - SPRING_DATASOURCE_PASSWORD=mtv123@@
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+      - SERVER_PORT=8090
+      - APP_URL=http://localhost:8090
+    volumes:
+      - ./be-java/src/main/resources/static:/app/static
+          
+  frontend:
+    image: 'web-exam-frontend:1.0.0' 
+    build:
+      context: ./fe-next
+      dockerfile: Dockerfile
+    container_name: web-exam-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - app
+    environment:
+      - CHOKIDAR_USERPOLLING=true
+      - NEXT_PUBLIC_API_URL=http://localhost:8090
+    volumes:
+      - ./fe-next:/app
+      - /app/node_modules
+
+networks:
+  default:
+    driver: bridge

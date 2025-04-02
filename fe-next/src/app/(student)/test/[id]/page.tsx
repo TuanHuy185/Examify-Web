@@ -124,7 +124,7 @@ const StudentTest = () => {
         throw new Error(errorData.message || "Không thể bắt đầu bài kiểm tra.");
       }
       console.log("Bài kiểm tra đã bắt đầu thành công.");
-      router.push(`/test/${testInfo.id}/taketest`);
+      router.push(`/test/${testInfo.id}/taketest?testId=${testInfo.id}&startTime=${startTime}&endTimeISO=${endTimeISO}&numberOfQuestion=${testInfo.numberquestion}`);
     } catch (error) {
       console.error("Lỗi khi gửi yêu cầu bắt đầu bài kiểm tra:", error);
       alert("Có lỗi xảy ra khi bắt đầu bài kiểm tra. Vui lòng thử lại sau.");
