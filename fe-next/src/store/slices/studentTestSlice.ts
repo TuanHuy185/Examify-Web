@@ -1,20 +1,20 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { TestResult, StudentTestState } from "@/types/slices";
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { TestResult, StudentTestState } from '@/types/slices';
 
 export const fetchPastTestResults = createAsyncThunk(
-  "tests/fetchPastTestResults",
+  'tests/fetchPastTestResults',
   async (studentId: string, { rejectWithValue }) => {
     try {
       const apiUrl = `${process.env.NEXT_PUBLIC_BE_API_URL}/students/${studentId}/results`;
       const response = await fetch(apiUrl, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
       });
       if (!response.ok) {
-        throw new Error("Failed to fetch tests");
+        throw new Error('Failed to fetch tests');
       }
       const data = await response.json();
       return data.data;
@@ -22,7 +22,7 @@ export const fetchPastTestResults = createAsyncThunk(
       if (error instanceof Error) {
         return rejectWithValue(error.message);
       }
-      return rejectWithValue("An unknown error occurred");
+      return rejectWithValue('An unknown error occurred');
     }
   }
 );
@@ -55,4 +55,4 @@ const studentTestSlice = createSlice({
 });
 
 export const selectStudentTests = (state: { studentTests: StudentTestState }) => state.studentTests;
-export default studentTestSlice.reducer; 
+export default studentTestSlice.reducer;

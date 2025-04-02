@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { TestResult, SubmissionState } from "@/types/slices";
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { TestResult, SubmissionState } from '@/types/slices';
 
 interface SubmissionParams {
   testId: string;
@@ -7,25 +7,25 @@ interface SubmissionParams {
 }
 
 export const fetchSubmissionDetails = createAsyncThunk(
-  "submissions/fetchSubmissionDetails",
+  'submissions/fetchSubmissionDetails',
   async ({ testId, studentId }: SubmissionParams, { rejectWithValue }) => {
     try {
       const apiUrl = `${process.env.NEXT_PUBLIC_BE_API_URL}/tests/${testId}/students/${studentId}/results`;
       const response = await fetch(apiUrl, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch submission details");
+        throw new Error('Failed to fetch submission details');
       }
 
       const data = await response.json();
-      if (data.status !== "OK") {
-        throw new Error(data.message || "Failed to fetch submission details");
+      if (data.status !== 'OK') {
+        throw new Error(data.message || 'Failed to fetch submission details');
       }
 
       return data.data;
@@ -42,7 +42,7 @@ const initialState: SubmissionState = {
 };
 
 const submissionSlice = createSlice({
-  name: "submissions",
+  name: 'submissions',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -63,4 +63,4 @@ const submissionSlice = createSlice({
 });
 
 export const selectSubmissions = (state: { submissions: SubmissionState }) => state.submissions;
-export default submissionSlice.reducer; 
+export default submissionSlice.reducer;

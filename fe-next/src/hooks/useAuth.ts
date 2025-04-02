@@ -3,20 +3,20 @@ import { RootState } from '@/store/store';
 import { sendEmail, saveRegisterInfor } from '@/store/slices/authSlice';
 
 export function useAuth() {
-    const dispatch = useDispatch();
-    const auth = useSelector((state: RootState) => state.authentication);
+  const dispatch = useDispatch();
+  const auth = useSelector((state: RootState) => state.authentication);
 
-    const handleSendEmail = (email: string) => {
-        dispatch(sendEmail(email));
-    };
+  const handleSendEmail = (email: string) => {
+    dispatch(sendEmail(email));
+  };
 
-    const handleSaveRegisterInfo = (data: any) => {
-        dispatch(saveRegisterInfor(data));
-    };
+  const handleSaveRegisterInfo = (data: any) => {
+    dispatch(saveRegisterInfor(data));
+  };
 
-    return {
-        ...auth,
-        sendEmail: handleSendEmail,
-        saveRegisterInfo: handleSaveRegisterInfo,
-    };
-} 
+  return {
+    ...auth,
+    sendEmail: handleSendEmail,
+    saveRegisterInfo: handleSaveRegisterInfo,
+  };
+}

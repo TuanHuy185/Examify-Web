@@ -25,13 +25,22 @@ const Dashboard = () => {
   const [joinLoading, setJoinLoading] = useState(false);
   const [userRole, setUserRole] = useState<'student' | 'teacher' | null>(null);
 
+  // Separate effect for role check
+  useEffect(() => {
+    const role = localStorage.getItem("userRole");
+    if (role) {
+      const normalizedRole = role.toLowerCase();
+      setUserRole(normalizedRole as 'student' | 'teacher');
+    }
+  }, []);
+
+  // Separate effect for data fetching
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     const role = localStorage.getItem("userRole");
     
     if (userId && role) {
       const normalizedRole = role.toLowerCase();
-      setUserRole(normalizedRole as 'student' | 'teacher');
       if (normalizedRole === 'teacher') {
         dispatch(fetchTeacherTests(userId));
       } else if (normalizedRole === 'student') {
@@ -80,8 +89,8 @@ const Dashboard = () => {
   // Filter tests based on search query
   const filteredTests = userRole === 'teacher' 
     ? (searchQuery.trim() === ""
-      ? teacherTests
-      : teacherTests.filter((test) => {
+      ? (teacherTests || [])
+      : (teacherTests || []).filter((test) => {
           const query = searchQuery.toLowerCase();
           return (
             test.title.toLowerCase().includes(query) ||
@@ -89,8 +98,8 @@ const Dashboard = () => {
           );
         }))
     : (searchQuery.trim() === ''
-      ? pastResults 
-      : pastResults.filter(result => 
+      ? (pastResults || [])
+      : (pastResults || []).filter(result => 
           result.testid.toLowerCase().includes(searchQuery.toLowerCase())
         ));
 
@@ -144,6 +153,7 @@ const Dashboard = () => {
                   placeholder="Enter passcode"
                   className="flex-grow px-3 py-2 border border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   disabled={joinLoading}
+                  suppressHydrationWarning
                 />
                 <button
                   onClick={handleJoinTest}
@@ -173,6 +183,7 @@ const Dashboard = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={`Search by ${userRole === 'teacher' ? 'title or passcode' : 'test name'}...`}
                 className="w-full px-3 py-2 pl-10 border border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                suppressHydrationWarning
               />
               <Search
                 size={18}
@@ -186,7 +197,7 @@ const Dashboard = () => {
               <p className="text-neutral-600">Loading tests...</p>
             ) : teacherError ? (
               <p className="text-red-500">Error: {teacherError}</p>
-            ) : teacherTests.length === 0 ? (
+            ) : !teacherTests || teacherTests.length === 0 ? (
               <p className="text-neutral-600">No tests found.</p>
             ) : filteredTests.length === 0 ? (
               <p className="text-neutral-600 bg-white p-4 rounded-lg shadow-md text-center">

@@ -2,8 +2,6 @@ FROM openjdk:21-jdk
 
 WORKDIR /app
 
-COPY . .
+COPY target/examify.jar examify.jar
 
-RUN ./mvnw clean package -DskipTests
-
-ENTRYPOINT ["java", "-jar", "target/*.jar"]
+ENTRYPOINT ["java", "-jar", "examify.jar"]

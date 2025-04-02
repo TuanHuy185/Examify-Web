@@ -1,26 +1,26 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { User, UserState } from "@/types/slices";
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { User, UserState } from '@/types/slices';
 
 export const fetchUserInfo = createAsyncThunk(
-  "user/fetchUserInfo",
+  'user/fetchUserInfo',
   async (userId: string, { rejectWithValue }) => {
     try {
       const apiUrl = `${process.env.NEXT_PUBLIC_BE_API_URL}/users/${userId}`;
       const response = await fetch(apiUrl, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch user information");
+        throw new Error('Failed to fetch user information');
       }
 
       const data = await response.json();
-      if (data.status !== "OK") {
-        throw new Error(data.message || "Failed to fetch user information");
+      if (data.status !== 'OK') {
+        throw new Error(data.message || 'Failed to fetch user information');
       }
       console.log(data.data);
       return data.data;
@@ -37,7 +37,7 @@ const initialState: UserState = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -58,4 +58,4 @@ const userSlice = createSlice({
 });
 
 export const selectUser = (state: { user: UserState }) => state.user;
-export default userSlice.reducer; 
+export default userSlice.reducer;

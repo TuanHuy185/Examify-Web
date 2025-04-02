@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/store";
-import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
-import { createTest } from "@/store/slices/teacherTestSlice";
-import { toast } from "react-toastify";
-import { ArrowLeft, ArrowUp, ArrowDown } from "lucide-react";
-import { Test } from "@/types/slices";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/store/store';
+import NavBar from '@/components/NavBar';
+import Footer from '@/components/Footer';
+import { createTest } from '@/store/slices/teacherTestSlice';
+import { toast } from 'react-toastify';
+import { ArrowLeft, ArrowUp, ArrowDown } from 'lucide-react';
+import { Test } from '@/types/slices';
 
 interface Option {
   text: string;
@@ -36,20 +36,20 @@ const CreateTest = () => {
 
   // Single state object for all test data
   const [testData, setTestData] = useState<TestData>({
-    title: "",
-    description: "",
-    testTime: "",
-    startTime: "",
-    closeTime: "",
+    title: '',
+    description: '',
+    testTime: '',
+    startTime: '',
+    closeTime: '',
     questions: [],
   });
 
   // State for the current question being added
   const [newQuestion, setNewQuestion] = useState<Question>({
-    text: "",
+    text: '',
     options: [
-      { text: "", isCorrect: false },
-      { text: "", isCorrect: false },
+      { text: '', isCorrect: false },
+      { text: '', isCorrect: false },
     ],
   });
 
@@ -58,7 +58,9 @@ const CreateTest = () => {
   };
 
   // Handle changes to test details
-  const handleTestDetailsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleTestDetailsChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setTestData((prev) => ({ ...prev, [name]: value }));
   };
@@ -80,7 +82,7 @@ const CreateTest = () => {
     if (newQuestion.options.length < 4) {
       setNewQuestion((prev) => ({
         ...prev,
-        options: [...prev.options, { text: "", isCorrect: false }],
+        options: [...prev.options, { text: '', isCorrect: false }],
       }));
     }
   };
@@ -96,11 +98,11 @@ const CreateTest = () => {
   // Add the current question to the testData.questions array
   const addQuestion = () => {
     if (!newQuestion.text || newQuestion.options.some((opt) => !opt.text)) {
-      alert("Please fill in the question and all options");
+      alert('Please fill in the question and all options');
       return;
     }
     if (!newQuestion.options.some((opt) => opt.isCorrect)) {
-      alert("Please mark at least one option as correct");
+      alert('Please mark at least one option as correct');
       return;
     }
     setTestData((prev) => ({
@@ -108,10 +110,10 @@ const CreateTest = () => {
       questions: [...prev.questions, newQuestion],
     }));
     setNewQuestion({
-      text: "",
+      text: '',
       options: [
-        { text: "", isCorrect: false },
-        { text: "", isCorrect: false },
+        { text: '', isCorrect: false },
+        { text: '', isCorrect: false },
       ],
     });
   };
@@ -147,21 +149,16 @@ const CreateTest = () => {
   // Submit the entire testData to the API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      !testData.title ||
-      !testData.testTime ||
-      !testData.startTime ||
-      !testData.closeTime
-    ) {
-      alert("Please fill in all test details");
+    if (!testData.title || !testData.testTime || !testData.startTime || !testData.closeTime) {
+      alert('Please fill in all test details');
       return;
     }
     if (parseInt(testData.testTime, 10) <= 0) {
-      toast.error("Test duration must be a positive number");
+      toast.error('Test duration must be a positive number');
       return;
     }
     if (testData.questions.length === 0) {
-      alert("Please add at least one question");
+      alert('Please add at least one question');
       return;
     }
 
@@ -172,7 +169,7 @@ const CreateTest = () => {
       testTime: parseInt(testData.testTime, 10),
       timeOpen: new Date(testData.startTime).toISOString(),
       timeClose: new Date(testData.closeTime).toISOString(),
-      teacherId: localStorage.getItem("userId"),
+      teacherId: localStorage.getItem('userId'),
       numberOfQuestion: testData.questions.length,
       questions: testData.questions.map((q) => ({
         content: q.text,
@@ -185,43 +182,37 @@ const CreateTest = () => {
     };
 
     try {
-      const result = await dispatch(createTest(formattedTestData as unknown as Omit<Test, 'id'>)).unwrap();
-      toast.success("Test created successfully");
-      router.push("/dashboard");
+      const result = await dispatch(
+        createTest(formattedTestData as unknown as Omit<Test, 'id'>)
+      ).unwrap();
+      toast.success('Test created successfully');
+      router.push('/dashboard');
     } catch (error: any) {
-      console.error("Error creating test:", error);
-      toast.error(error.message || "Failed to create test");
+      console.error('Error creating test:', error);
+      toast.error(error.message || 'Failed to create test');
     }
   };
 
   return (
     <div className="min-h-screen bg-neutral-50">
       <NavBar />
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center mb-6">
+      <main className="mx-auto max-w-7xl px-4 py-8">
+        <div className="mb-6 flex items-center">
           <button
             onClick={handleGoBack}
-            className="mr-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="mr-4 rounded-full p-2 transition-colors hover:bg-gray-100"
             title="Go back"
           >
             <ArrowLeft size={24} className="text-neutral-700" />
           </button>
-          <h2 className="text-3xl font-bold text-neutral-800">
-            Create New Test
-          </h2>
+          <h2 className="text-3xl font-bold text-neutral-800">Create New Test</h2>
         </div>
 
         {/* Test Details Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-lg shadow-md mb-12"
-        >
-          <div className="grid md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="mb-12 rounded-lg bg-white p-6 shadow-md">
+          <div className="grid gap-6 md:grid-cols-2">
             <div>
-              <label
-                htmlFor="title"
-                className="block text-neutral-600 mb-2 font-medium"
-              >
+              <label htmlFor="title" className="mb-2 block font-medium text-neutral-600">
                 Test Title
               </label>
               <input
@@ -230,16 +221,13 @@ const CreateTest = () => {
                 name="title"
                 value={testData.title}
                 onChange={handleTestDetailsChange}
-                className="w-full px-3 py-2 border border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-md border border-neutral-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Enter test title"
                 required
               />
             </div>
             <div>
-              <label
-                htmlFor="testTime"
-                className="block text-neutral-600 mb-2 font-medium"
-              >
+              <label htmlFor="testTime" className="mb-2 block font-medium text-neutral-600">
                 Test Duration (minutes)
               </label>
               <input
@@ -248,17 +236,14 @@ const CreateTest = () => {
                 name="testTime"
                 value={testData.testTime}
                 onChange={handleTestDetailsChange}
-                className="w-full px-3 py-2 border border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-md border border-neutral-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="e.g., 60"
                 min="1"
                 required
               />
             </div>
             <div>
-              <label
-                htmlFor="startTime"
-                className="block text-neutral-600 mb-2 font-medium"
-              >
+              <label htmlFor="startTime" className="mb-2 block font-medium text-neutral-600">
                 Start Time
               </label>
               <input
@@ -267,15 +252,12 @@ const CreateTest = () => {
                 name="startTime"
                 value={testData.startTime}
                 onChange={handleTestDetailsChange}
-                className="w-full px-3 py-2 border border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-md border border-neutral-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 required
               />
             </div>
             <div>
-              <label
-                htmlFor="closeTime"
-                className="block text-neutral-600 mb-2 font-medium"
-              >
+              <label htmlFor="closeTime" className="mb-2 block font-medium text-neutral-600">
                 Close Time
               </label>
               <input
@@ -284,16 +266,13 @@ const CreateTest = () => {
                 name="closeTime"
                 value={testData.closeTime}
                 onChange={handleTestDetailsChange}
-                className="w-full px-3 py-2 border border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-md border border-neutral-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 required
               />
             </div>
           </div>
           <div className="mt-6">
-            <label
-              htmlFor="description"
-              className="block text-neutral-600 mb-2 font-medium"
-            >
+            <label htmlFor="description" className="mb-2 block font-medium text-neutral-600">
               Description
             </label>
             <textarea
@@ -301,7 +280,7 @@ const CreateTest = () => {
               name="description"
               value={testData.description}
               onChange={handleTestDetailsChange}
-              className="w-full px-3 py-2 border border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-md border border-neutral-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="Enter test description"
               rows={4}
             />
@@ -310,15 +289,10 @@ const CreateTest = () => {
 
         {/* Questions Section */}
         <section className="mb-12">
-          <h3 className="text-2xl font-semibold text-neutral-800 mb-6">
-            Add Questions
-          </h3>
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          <h3 className="mb-6 text-2xl font-semibold text-neutral-800">Add Questions</h3>
+          <div className="rounded-lg bg-white p-6 shadow-md">
             <div className="mb-4">
-              <label
-                htmlFor="questionText"
-                className="block text-neutral-600 mb-2 font-medium"
-              >
+              <label htmlFor="questionText" className="mb-2 block font-medium text-neutral-600">
                 Question
               </label>
               <input
@@ -326,33 +300,27 @@ const CreateTest = () => {
                 id="questionText"
                 value={newQuestion.text}
                 onChange={handleQuestionTextChange}
-                className="w-full px-3 py-2 border border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-md border border-neutral-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Enter your question"
               />
             </div>
             <div className="mb-6">
-              <label className="block text-neutral-600 mb-2 font-medium">
-                Options
-              </label>
+              <label className="mb-2 block font-medium text-neutral-600">Options</label>
               {newQuestion.options.map((option, index) => (
-                <div key={index} className="flex items-center gap-4 mb-2">
+                <div key={index} className="mb-2 flex items-center gap-4">
                   <input
                     type="text"
                     value={option.text}
-                    onChange={(e) =>
-                      handleOptionChange(index, "text", e.target.value)
-                    }
-                    className="flex-grow px-3 py-2 border border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    onChange={(e) => handleOptionChange(index, 'text', e.target.value)}
+                    className="flex-grow rounded-md border border-neutral-600 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder={`Option ${index + 1}`}
                   />
                   <label className="flex items-center">
                     <input
                       type="checkbox"
                       checked={option.isCorrect}
-                      onChange={(e) =>
-                        handleOptionChange(index, "isCorrect", e.target.checked)
-                      }
-                      className="mr-2 w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                      onChange={(e) => handleOptionChange(index, 'isCorrect', e.target.checked)}
+                      className="mr-2 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                     />
                     Correct
                   </label>
@@ -371,7 +339,7 @@ const CreateTest = () => {
                 <button
                   type="button"
                   onClick={addOption}
-                  className="text-primary hover:underline mt-2"
+                  className="mt-2 text-primary hover:underline"
                 >
                   Add Option
                 </button>
@@ -380,7 +348,7 @@ const CreateTest = () => {
             <button
               type="button"
               onClick={addQuestion}
-              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary transition"
+              className="rounded-md bg-primary px-4 py-2 text-white transition hover:bg-secondary"
             >
               Add Question
             </button>
@@ -389,27 +357,21 @@ const CreateTest = () => {
           {/* Display Added Questions */}
           {testData.questions.length > 0 && (
             <div className="mt-6">
-              <h4 className="text-xl font-semibold text-neutral-800 mb-4">
-                Added Questions
-              </h4>
+              <h4 className="mb-4 text-xl font-semibold text-neutral-800">Added Questions</h4>
               {testData.questions.map((q, index) => (
-                <div key={index} className="bg-accent p-4 rounded-md mb-4">
-                  <div className="flex justify-between items-start">
+                <div key={index} className="mb-4 rounded-md bg-accent p-4">
+                  <div className="flex items-start justify-between">
                     <div className="flex-grow">
-                      <p className="text-neutral-800 font-medium">
+                      <p className="font-medium text-neutral-800">
                         {index + 1}. {q.text}
                       </p>
-                      <ul className="list-disc pl-6 mt-2">
+                      <ul className="mt-2 list-disc pl-6">
                         {q.options.map((opt, i) => (
                           <li
                             key={i}
-                            className={
-                              opt.isCorrect
-                                ? "text-green-600"
-                                : "text-neutral-600"
-                            }
+                            className={opt.isCorrect ? 'text-green-600' : 'text-neutral-600'}
                           >
-                            {opt.text} {opt.isCorrect && "(Correct)"}
+                            {opt.text} {opt.isCorrect && '(Correct)'}
                           </li>
                         ))}
                       </ul>
@@ -420,10 +382,8 @@ const CreateTest = () => {
                           type="button"
                           onClick={() => moveQuestionUp(index)}
                           disabled={index === 0}
-                          className={`p-1 rounded hover:bg-gray-100 ${
-                            index === 0
-                              ? "text-gray-300 cursor-not-allowed"
-                              : "text-blue-500"
+                          className={`rounded p-1 hover:bg-gray-100 ${
+                            index === 0 ? 'cursor-not-allowed text-gray-300' : 'text-blue-500'
                           }`}
                           title="Move Up"
                         >
@@ -433,10 +393,10 @@ const CreateTest = () => {
                           type="button"
                           onClick={() => moveQuestionDown(index)}
                           disabled={index === testData.questions.length - 1}
-                          className={`p-1 rounded hover:bg-gray-100 ${
+                          className={`rounded p-1 hover:bg-gray-100 ${
                             index === testData.questions.length - 1
-                              ? "text-gray-300 cursor-not-allowed"
-                              : "text-blue-500"
+                              ? 'cursor-not-allowed text-gray-300'
+                              : 'text-blue-500'
                           }`}
                           title="Move Down"
                         >
@@ -446,7 +406,7 @@ const CreateTest = () => {
                       <button
                         type="button"
                         onClick={() => removeQuestion(index)}
-                        className="text-red-500 hover:text-red-700 font-medium ml-2"
+                        className="ml-2 font-medium text-red-500 hover:text-red-700"
                       >
                         Remove
                       </button>
@@ -462,7 +422,7 @@ const CreateTest = () => {
             onClick={handleSubmit}
             type="submit"
             form="testForm"
-            className="bg-primary text-white px-6 py-3 rounded-md hover:bg-secondary transition"
+            className="rounded-md bg-primary px-6 py-3 text-white transition hover:bg-secondary"
           >
             Save Test
           </button>

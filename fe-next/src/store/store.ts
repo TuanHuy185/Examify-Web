@@ -1,9 +1,9 @@
-import { configureStore } from "@reduxjs/toolkit";
-import authenticationReducer from "./slices/authSlice";
-import teacherTestReducer from "./slices/teacherTestSlice";
-import studentTestReducer from "./slices/studentTestSlice";
-import submissionReducer from "./slices/submissionSlice";
-import userReducer from "./slices/userSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import authenticationReducer from './slices/authSlice';
+import teacherTestReducer from './slices/teacherTestSlice';
+import studentTestReducer from './slices/studentTestSlice';
+import submissionReducer from './slices/submissionSlice';
+import userReducer from './slices/userSlice';
 
 const store = configureStore({
   reducer: {
@@ -18,4 +18,4 @@ const store = configureStore({
 export default store;
 
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch; 
+export type AppDispatch = typeof store.dispatch;

@@ -25,7 +25,7 @@ const ViewResults = () => {
     console.log(allTestResults);
   }, [dispatch, testId]);
 
-  const handleViewDetails = (studentId: string) => {
+  const handleViewDetails = (testId: string, studentId: string) => {
     router.push(`/test/${testId}/students/${studentId}`);
   };
 

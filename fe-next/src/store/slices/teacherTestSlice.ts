@@ -1,56 +1,59 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Test, TestResult, TeacherTestState } from "@/types/slices";
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { Test, TestResult, TeacherTestState } from '@/types/slices';
 
 // Async thunks
 export const createTest = createAsyncThunk(
-  "tests/createTest",
+  'tests/createTest',
   async (testData: Omit<Test, 'id'>, { rejectWithValue }) => {
     try {
-      console.log("Sending test data:", testData);
+      console.log('Sending test data:', testData);
       const apiUrl = `${process.env.NEXT_PUBLIC_BE_API_URL}/tests`;
       const response = await fetch(apiUrl, {
-        method: "POST",
-        credentials: "include",
+        method: 'POST',
+        credentials: 'include',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(testData),
       });
 
       const data = await response.json();
-      console.log("API Response:", data);
+      console.log('API Response:', data);
 
       if (!response.ok) {
         throw new Error(data.message || `HTTP error! Status: ${response.status}`);
       }
 
-      if (data.status !== "OK") {
-        throw new Error(data.message || "Failed to create test");
+      if (data.status !== 'OK') {
+        throw new Error(data.message || 'Failed to create test');
       }
 
       return data; // Return the actual test data instead of the whole response
     } catch (error) {
-      console.error("Error creating test:", error instanceof Error ? error.message : 'Unknown error');
+      console.error(
+        'Error creating test:',
+        error instanceof Error ? error.message : 'Unknown error'
+      );
       return rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
     }
   }
 );
 
 export const fetchTeacherTests = createAsyncThunk(
-  "tests/fetchTests",
+  'tests/fetchTests',
   async (teacherId: string, { rejectWithValue }) => {
     try {
       const apiUrl = `${process.env.NEXT_PUBLIC_BE_API_URL}/tests?teacherId=${teacherId}`;
       const response = await fetch(apiUrl, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch tests");
+        throw new Error('Failed to fetch tests');
       }
 
       const data = await response.json();
@@ -62,19 +65,19 @@ export const fetchTeacherTests = createAsyncThunk(
 );
 
 export const fetchTestDetails = createAsyncThunk(
-  "tests/fetchTestDetails",
+  'tests/fetchTestDetails',
   async (testId: string, { rejectWithValue }) => {
     try {
-      const teacherId = localStorage.getItem("userId");
+      const teacherId = localStorage.getItem('userId');
       const apiUrl = `${process.env.NEXT_PUBLIC_BE_API_URL}/tests/${testId}?teacherId=${teacherId}`;
       const response = await fetch(apiUrl, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
       });
-      if (!response.ok) throw new Error("Failed to fetch test details");
+      if (!response.ok) throw new Error('Failed to fetch test details');
       return await response.json();
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
@@ -83,19 +86,16 @@ export const fetchTestDetails = createAsyncThunk(
 );
 
 export const updateTest = createAsyncThunk(
-  "tests/updateTest",
+  'tests/updateTest',
   async (testData: Test, { rejectWithValue }) => {
     console.log('Updating test:', testData);
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BE_API_URL}/tests`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(testData),
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BE_API_URL}/tests`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(testData),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -103,14 +103,14 @@ export const updateTest = createAsyncThunk(
       }
 
       const result = await response.json();
-      
-      if (result.status !== "OK") {
-        throw new Error(result.message || "Failed to update test");
+
+      if (result.status !== 'OK') {
+        throw new Error(result.message || 'Failed to update test');
       }
-      
+
       return {
         ...result,
-        testId: testData.id
+        testId: testData.id,
       };
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
@@ -119,25 +119,25 @@ export const updateTest = createAsyncThunk(
 );
 
 export const fetchTestResults = createAsyncThunk(
-  "tests/fetchTestResults",
+  'tests/fetchTestResults',
   async (testId: string, { rejectWithValue }) => {
     try {
       const apiUrl = `${process.env.NEXT_PUBLIC_BE_API_URL}/tests/${testId}/results`;
       const response = await fetch(apiUrl, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch test results");
+        throw new Error('Failed to fetch test results');
       }
 
       const data = await response.json();
-      if (data.status !== "OK") {
-        throw new Error(data.message || "Failed to fetch test results");
+      if (data.status !== 'OK') {
+        throw new Error(data.message || 'Failed to fetch test results');
       }
 
       return data.data;
@@ -148,16 +148,16 @@ export const fetchTestResults = createAsyncThunk(
 );
 
 export const deleteTest = createAsyncThunk(
-  "tests/deleteTest",
+  'tests/deleteTest',
   async (testId: string, { rejectWithValue }) => {
     try {
       const apiUrl = `${process.env.NEXT_PUBLIC_BE_API_URL}/tests/${testId}`;
       const response = await fetch(apiUrl, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -166,13 +166,13 @@ export const deleteTest = createAsyncThunk(
       }
 
       const data = await response.json();
-      if (data.status !== "OK" && !data.success) {
-        throw new Error(data.message || "Failed to delete test");
+      if (data.status !== 'OK' && !data.success) {
+        throw new Error(data.message || 'Failed to delete test');
       }
-      
-      return { testId, message: data.message || "Test deleted successfully" };
+
+      return { testId, message: data.message || 'Test deleted successfully' };
     } catch (error) {
-      console.error("Error deleting test:", error);
+      console.error('Error deleting test:', error);
       return rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
     }
   }
@@ -187,7 +187,7 @@ const initialState: TeacherTestState = {
 };
 
 const teacherTestSlice = createSlice({
-  name: "tests",
+  name: 'tests',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -228,9 +228,9 @@ const teacherTestSlice = createSlice({
         if (action.payload && action.payload.data) {
           state.currentTest = action.payload.data;
         }
-        
+
         if (state.tests.length > 0 && action.payload.testId) {
-          const index = state.tests.findIndex(t => t.id === action.payload.testId);
+          const index = state.tests.findIndex((t) => t.id === action.payload.testId);
           if (index !== -1 && action.payload.data) {
             state.tests[index] = action.payload.data;
           }
@@ -260,7 +260,7 @@ const teacherTestSlice = createSlice({
       })
       .addCase(deleteTest.fulfilled, (state, action) => {
         state.loading = false;
-        state.tests = state.tests.filter(test => test.id !== action.payload.testId);
+        state.tests = state.tests.filter((test) => test.id !== action.payload.testId);
         if (state.currentTest?.id === action.payload.testId) {
           state.currentTest = null;
         }
@@ -273,4 +273,4 @@ const teacherTestSlice = createSlice({
 });
 
 export const selectTeacherTests = (state: { teacherTests: TeacherTestState }) => state.teacherTests;
-export default teacherTestSlice.reducer; 
+export default teacherTestSlice.reducer;

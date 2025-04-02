@@ -1,7 +1,7 @@
 'use client';
 
-import Navbar from "@/components/NavBar";
-import Footer from "@/components/Footer";
+import Navbar from '@/components/NavBar';
+import Footer from '@/components/Footer';
 
 export default function Error({
   error,
@@ -13,12 +13,12 @@ export default function Error({
   return (
     <div className="min-h-screen bg-neutral-50">
       <Navbar />
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="text-center">
-          <p className="text-red-500 mb-4">Error: {error.message}</p>
+          <p className="mb-4 text-red-500">Error: {error.message}</p>
           <button
             onClick={reset}
-            className="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary transition-colors"
+            className="rounded-md bg-primary px-4 py-2 text-white transition-colors hover:bg-secondary"
           >
             Try again
           </button>
@@ -27,4 +27,4 @@ export default function Error({
       <Footer />
     </div>
   );
-} 
+}
